@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+</head>
+<body>
+<h1>Form</h1>
+<form action="#" th:action="@{/add}" th:object="${cat}" method="post">
+    <p>Message: <input type="text" th:field="*{name}" /></p>
+    <p><input type="submit" value="Submit" /></p>
+</form>
+<table class="table table-striped" >
+    <tr class="active">
+        <th>Id</th>
+        <th>name</th>
+    </tr>
+    <tr th:each="cat : ${catsList}">
+        <td th:text="${cat.id}"></td>
+        <td th:text="${cat.name}"></td>
+        <td><a th:href="${'/delete/' + cat.id}">Delete</a> </td>
+        <td><a th:href="${'/update/' + cat.id}">Update</a> </td>
+
+    </tr>
+</table>
+</body>
+</html>
