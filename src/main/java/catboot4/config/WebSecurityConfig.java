@@ -3,6 +3,8 @@ package catboot4.config;
 /**
  * Created by USER on 24.11.2017.
  */
+import catboot4.security.filter.JWTAuthenticationFilter;
+import catboot4.security.filter.JWTLoginFilter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -17,19 +19,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
+        http.csrf().disable().authorizeRequests()
                 .antMatchers("/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
+                .addFilterBefore(new JWTLoginFilter("/login", authenticationManager()),
+                UsernamePasswordAuthenticationFilter.class)
+                // And filter other requests to check the presence of JWT in header
+
+                .addFilterBefore(new JWTAuthenticationFilter(),
+                        UsernamePasswordAuthenticationFilter.class);
 //                anyRequest().authenticated()
 //                .antMatchers("/login").permitAll()
-                .formLogin()
-                .loginPage("/login")
-                .failureUrl("/error")
-                .and()
-                .logout()
-                .logoutSuccessUrl("/index");
+//                .formLogin()
+//                .loginPage("/login")
+//                .failureUrl("/error")
+//                .and()
+//                .logout()
+//                .logoutSuccessUrl("/index");
     }
 
     @Override
